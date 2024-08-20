@@ -1,0 +1,857 @@
+<!DOCTYPE html><html>  <head>    <script type="text/javascript">
+  if (!window.wx) {
+    window.wx = {};
+  }
+  
+  // mp 不再支持 ie浏览器 @sankigan
+  (function() {
+    setTimeout(function() {
+      // 为兼容可选链等高级语法在tpl文件中的使用。未来如果需要使用更多新特性可以考虑加loader降级 @orinyang
+      function checkBrowserVersion(ua){
+        const chromeRegex = /Chrome\/([0-9]+(?:\.[0-9]+)*)/;
+        const safariRegex = /Version\/([0-9]+(?:\.[0-9]+)*)/; 
+        const firefoxRegex = /Firefox\/([0-9]+(?:\.[0-9]+)*)/;
+
+        let chromeVersion = ua.match(chromeRegex);
+        if(chromeVersion){
+          return parseFloat(chromeVersion[1]) < 80;
+        }
+        let safariVersion = ua.match(safariRegex);
+        if(safariVersion){
+          return parseFloat(safariVersion[1]) < 13.1;
+        }
+        let firefoxVersion = ua.match(firefoxRegex);
+        if(firefoxVersion){
+          return parseFloat(firefoxVersion[1]) < 74;
+        }
+        return false;
+      }
+
+      function checkIE() {
+        var ua = navigator.userAgent;
+        var isSupportShadow = window.customElements && (document.head.createShadowRoot || document.head.attachShadow);
+        // 分别判断是否是 ie11 以下以及是否是 ie11 浏览器
+        if (
+          (ua.indexOf('compatible') > -1 && ua.indexOf('MSIE') > -1)
+          || (ua.indexOf('Trident') > -1 && ua.indexOf("rv:11.0") > -1)
+          || ua.indexOf('edge') > -1
+          || !isSupportShadow || checkBrowserVersion(ua)
+        ) {
+          // 因为 web1 也有同样的逻辑，这里去重
+          if (!document.querySelector('.js_ie_notsupport')) {
+            var div = document.createElement('div');
+            div.innerHTML = '<div class="js_ie_notsupport" style="width: 100%;min-width: 280px;padding: 5px 30px;display: inline-block;position: fixed;top: 0px;left: 0px;text-align: center;z-index: 9999;background-color: #EAA000;color: #FFFFFF;">当前浏览器版本过低，请将浏览器更新为新版本QQ浏览器或Chrome浏览器，以获得更好的体验</div>';
+            document.body.appendChild(div);
+          }
+        }
+      }
+  
+      if (window.attachEvent) {
+        window.attachEvent('onload', checkIE);
+      } else if (window.addEventListener) {
+        window.addEventListener('load', checkIE, false);
+      }
+    }, 10);
+  })();
+  
+  
+      // 左侧导航栏 @jaminqian
+          window.wx.menu = {
+        list: {"tree":{"nodes":[{"data":{"id":10063,"new_seq":0,"history_seq":0,"logo_key":"home","name":"首页","nav_url":"/cgi-bin/home?t=home/index","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10131,"new_seq":0,"history_seq":0,"logo_key":"notification","name":"通知中心","nav_url":"/cgi-bin/frame?t=notification/index_frame&nav=10131","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10113,"new_seq":0,"history_seq":0,"logo_key":"create","name":"内容与互动","nav_new_flag":0,"selected_flag":0},"nodes":[{"data":{"id":10114,"new_seq":0,"history_seq":0,"name":"创作","nav_new_flag":0,"selected_flag":0},"nodes":[{"data":{"id":10125,"new_seq":0,"history_seq":0,"name":"草稿箱","nav_url":"/cgi-bin/appmsg?begin=0&count=10&type=77&action=list_card","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10087,"new_seq":0,"history_seq":0,"name":"素材库","nav_url":"/cgi-bin/filepage?type=2&begin=0&count=12","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10126,"new_seq":0,"history_seq":0,"name":"发表记录","nav_url":"/cgi-bin/appmsgpublish?sub=list&begin=0&count=10","nav_new_flag":0,"selected_flag":1}},{"data":{"id":10042,"new_seq":0,"history_seq":1,"name":"原创","nav_url":"/cgi-bin/appmsgcopyright?action=orignal&type=1","nav_new_flag":0,"selected_flag":0}}]},{"data":{"id":10115,"new_seq":0,"history_seq":0,"name":"互动","nav_new_flag":0,"selected_flag":0},"nodes":[{"data":{"id":10033,"new_seq":0,"history_seq":1,"name":"留言","nav_url":"/misc/appmsgcomment?action=list_latest_comment&begin=0&count=10&sendtype=MASSSEND&scene=1","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10012,"new_seq":0,"history_seq":0,"name":"私信","nav_url":"/cgi-bin/message?t=message/list&count=20&day=7","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10132,"new_seq":0,"history_seq":0,"name":"提到","nav_url":"/cgi-bin/atfunc?action=get_at_notify_list","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10040,"new_seq":0,"history_seq":2,"name":"赞赏","nav_url":"/merchant/reward?action=getlatestreward","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10102,"new_seq":0,"history_seq":0,"name":"付费功能","nav_url":"/merchant/mppaysubscribe?action=getlatestpay","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10013,"new_seq":0,"history_seq":0,"name":"用户管理","nav_url":"/cgi-bin/contactmanage?t=user/index&pageidx=0&type=0","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10104,"new_seq":0,"history_seq":0,"name":"视频弹幕","nav_url":"/cgi-bin/video?action=list_video","nav_new_flag":0,"selected_flag":0}}]},{"data":{"id":10116,"new_seq":0,"history_seq":0,"name":"内容工具","nav_new_flag":0,"selected_flag":0},"nodes":[{"data":{"id":10006,"new_seq":0,"history_seq":0,"name":"自动回复","nav_url":"/advanced/autoreply?t=ivr/reply&action=beadded","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10007,"new_seq":0,"history_seq":0,"name":"自定义菜单","nav_url":"/advanced/selfmenu?action=index&t=advanced/menu-setting","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10039,"new_seq":0,"history_seq":1,"name":"合集标签","nav_url":"/cgi-bin/appmsgalbummgr?action=list","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10038,"new_seq":0,"history_seq":1,"name":"投票","nav_url":"/cgi-bin/newoperatevote?action=list","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10112,"new_seq":0,"history_seq":0,"name":"号内搜索","nav_url":"/cgi-bin/searchplugin?action=profilewordsinfo","nav_new_flag":0,"selected_flag":0}}]}]},{"data":{"id":10117,"new_seq":0,"history_seq":0,"logo_key":"statistics","name":"数据","nav_new_flag":0,"selected_flag":0},"nodes":[{"data":{"id":10016,"new_seq":0,"history_seq":0,"name":"内容分析","nav_url":"/misc/appmsganalysis?action=report","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10015,"new_seq":0,"history_seq":0,"name":"用户分析","nav_url":"/misc/useranalysis?","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10047,"new_seq":0,"history_seq":0,"name":"菜单分析","nav_url":"/misc/menuanalysis?","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10017,"new_seq":0,"history_seq":0,"name":"消息分析","nav_url":"/misc/messageanalysis?type=daily&t=statistics/msg","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10018,"new_seq":0,"history_seq":0,"name":"接口分析","nav_url":"/misc/interfaceanalysis?type=daily","nav_new_flag":0,"selected_flag":0}}]},{"data":{"id":10118,"new_seq":0,"history_seq":0,"logo_key":"business","name":"广告与服务","nav_new_flag":0,"selected_flag":0},"nodes":[{"data":{"id":10119,"new_seq":0,"history_seq":0,"name":"广告","nav_new_flag":0,"selected_flag":0},"nodes":[{"data":{"id":10026,"new_seq":0,"history_seq":0,"name":"广告主","nav_url":"/promotion/advertiser_index?","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10027,"new_seq":0,"history_seq":0,"name":"流量主","nav_url":"/promotion/publisher/publisher_index?","nav_new_flag":0,"selected_flag":0}}]},{"data":{"id":10120,"new_seq":0,"history_seq":0,"name":"服务","nav_new_flag":0,"selected_flag":0},"nodes":[{"data":{"id":10060,"new_seq":0,"history_seq":0,"name":"小程序管理","nav_url":"/cgi-bin/wxopen?action=list","nav_new_flag":0,"selected_flag":0}}]},{"data":{"id":10121,"new_seq":0,"history_seq":0,"name":"更多能力","nav_new_flag":0,"selected_flag":0},"nodes":[{"data":{"id":10071,"new_seq":3,"history_seq":3,"name":"微信搜一搜","nav_url":"/misc/pluginloginpage?pluginuin=10071","nav_new_flag":0,"selected_flag":0}}]},{"data":{"id":10130,"new_seq":0,"history_seq":0,"name":"第三方市场","nav_new_flag":0,"selected_flag":0},"nodes":[{"data":{"id":10129,"new_seq":1,"history_seq":0,"name":"服务市场","nav_url":"/cgi-bin/frame?t=3rd_market/common_frame&nav=10129","nav_new_flag":0,"selected_flag":0}}]}]},{"data":{"id":10122,"new_seq":0,"history_seq":0,"logo_key":"setup","name":"设置与开发","nav_new_flag":0,"selected_flag":0},"nodes":[{"data":{"id":10123,"new_seq":0,"history_seq":0,"name":"基本设置","nav_new_flag":0,"selected_flag":0},"nodes":[{"data":{"id":10019,"new_seq":0,"history_seq":0,"name":"公众号设置","nav_url":"/cgi-bin/settingpage?t=setting/index&action=index","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10070,"new_seq":0,"history_seq":1,"name":"人员设置","nav_url":"/cgi-bin/safecenterstatus?action=admins&t=setting/safe-admins","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10022,"new_seq":0,"history_seq":0,"name":"安全中心","nav_url":"/cgi-bin/safecenterstatus?action=view&t=setting/safe-index","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10045,"new_seq":0,"history_seq":0,"name":"违规记录","nav_url":"/cgi-bin/illegalrecord?count=10","nav_new_flag":0,"selected_flag":0}}]},{"data":{"id":10052,"new_seq":0,"history_seq":0,"name":"开发","nav_new_flag":0,"selected_flag":0},"nodes":[{"data":{"id":10048,"new_seq":0,"history_seq":0,"name":"基本配置","nav_url":"/advanced/advanced?action=dev&t=advanced/dev","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10049,"new_seq":0,"history_seq":0,"name":"开发者工具","nav_url":"/cgi-bin/frame?t=advanced/dev_tools_frame&nav=10049","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10050,"new_seq":0,"history_seq":0,"name":"运维中心","nav_url":"/advanced/diagram?action=index","nav_new_flag":0,"selected_flag":0}},{"data":{"id":10051,"new_seq":0,"history_seq":0,"name":"接口权限","nav_url":"/advanced/advanced?action=table","nav_new_flag":0,"selected_flag":0}}]}]}]}},
+        pluginCenterNewFlag: '0' * 1,
+        redDot: {
+                      newFansMsgNum: '0' * 1,
+            newCommentNum: '0' * 1,
+            newQnaMsgNum: '' * 1,
+            newDanmuNum: '0' * 1,
+            newMentionNum: '0' * 1,
+            newCreateNum: '0' * 1 + '0' * 1 + '0' * 1 + '0' * 1,
+                  }
+      };
+      
+    // 页面公告 @jaminqian
+          window.wx.announcement = {
+        announcement_list: []
+      };
+        
+    
+  if (!window.wx.cgiData) {
+    window.wx.cgiData = {};
+  }
+  
+  window.handlerNickname = function(str, escape) { // 临时对nickname decode
+    // var ar=['&','&amp;','<','&lt;','>','&gt;',' ','&nbsp;','"','&quot;',"'",'&#39;','\\r','<br>','\\n','<br>'];
+    var ar = ['&', '&amp;', '<', '&lt;', '>', '&gt;', ' ', '&nbsp;', '"', '&quot;', '\'', '&#39;'];
+    /*
+    // 最新版的safari 12有一个BUG，如果使用字面量定义一个数组，var a = [1, 2, 3]
+    // 当调用了 a.reverse() 方法把变量 a 元素顺序反转成 3, 2, 1 后，
+    // 即使此页面刷新了， 或者此页面使用 A标签、 window.open 打开的页面，
+    // 只要调用到同一段代码， 变量 a 的元素顺序都会变成 3, 2, 1
+    // 所以这里不用 reverse 方法
+    if (escape === false) {
+      ar.reverse();
+    }*/
+    var arReverse = ['&#39;', '\'', '&quot;', '"', '&nbsp;', ' ', '&gt;', '>', '&lt;', '<', '&amp;', '&'];
+    var target;
+    if (escape === false) {
+      target = arReverse;
+    } else {
+      target = ar;
+    }
+    var r = str;
+    for (var i = 0; i < target.length; i += 2) {
+      r = r.replace(new RegExp(target[i], 'g'), target[1 + i]);
+    }
+    return r;
+  };
+  
+  window.wx.commonData = {
+    version: "5.0.0",
+    uin: "3943274291", // 兼容wx.uin
+    data: {
+      t: "364105463" || "364105463",
+      ticket: "d3baa2caa8dbd08b74a54f20cb7650733460ce43",
+      lang: 'zh_CN',
+      param: ["&token=364105463", '&lang=zh_CN'].join(""),
+      uin: "3943274291",
+      uin_base64: "Mzk0MzI3NDI5MQ==",
+      user_name: "gh_2ddf0452d62c",
+      nick_name: "蝉来蝉去",  // encode一次
+      nick_name_decode: handlerNickname("蝉来蝉去", false),  // encode一次 decode一次,因为空格需要特殊转义处理
+      time: "1723990259" || new Date().getTime() / 1000,
+      disable_head_box: "0" * 1,
+      open_app_type: '16' * 1,
+      serviceType: '1' * 1,
+      realnameType: '0' * 1, // 主体类型
+      isPersonVerify: '0' * 1, // 是否个人认证
+      isWxVerify: '0' * 1,
+      is_qverify: '0' * 1,
+      sp_login: '0' * 1,
+      sp_user_name: '',
+      sp_nick_name: '',
+      head_img: 'http://wx.qlogo.cn/mmopen/OUicWJdJoz3FKTZQmSwgqq5p6EeDXTfv3MkicKXOvCcibG4KIar2icE1nJIrTLjFjzsX2qcFh7XnrCicSJ6CRw8RziazHS5wMbKrPP/64'.replace('http://', 'https://'),
+      head_url: ''
+    },
+    path: {
+      video: '', // "https://res.wx.qq.com/mpres/zh_CN/htmledition/plprecorder/biz_web/video-js.swf",
+      audio: "https://res.wx.qq.com/mpres/zh_CN/htmledition/plprecorder/biz_web/audiojs700568.swf",
+      uploadify: "https://res.wx.qq.com/mpres/zh_CN/htmledition/plprecorder/biz_web/uploadify700568.swf",
+      webuploader: "https://res.wx.qq.com/mpres/zh_CN/htmledition/plprecorder/biz_web/webuploader700568.swf",
+      zoom: "https://res.wx.qq.com/mpres/zh_CN/htmledition/plprecorder/biz_web/zoom700568.swf",
+      zeroClipboard_new: "https://res.wx.qq.com/mpres/zh_CN/htmledition/plprecorder/biz_web/ZeroClipboard_new700568.swf",
+      rimgcrop: "https://res.wx.qq.com/mpres/htmledition/images/cut-round700568.gif",
+      icon: {
+        account_user: 'https://res.wx.qq.com/mpres/zh_CN/htmledition/weui-desktopSkin-common/svg/default/account-user700567.svg',
+        account_wxverify: 'https://res.wx.qq.com/mpres/zh_CN/htmledition/weui-desktopSkin-common/svg/default/account-wxverify700567.svg',
+        account_setting: 'https://res.wx.qq.com/mpres/zh_CN/htmledition/weui-desktopSkin-common/svg/default/account-setting700567.svg',
+        account_logout: 'https://res.wx.qq.com/mpres/zh_CN/htmledition/weui-desktopSkin-common/svg/default/account-logout700567.svg'
+      }
+    },
+    user_info: {
+            bind_finder_status: {
+                  bind_status: '3' * 1,
+          finder_nickname: '蝉来蝉去',
+          finder_head_img_url: 'https://wx.qlogo.cn/finderhead/ver_1/qia1oT3oWdLtSWucDjPbQtfaCaJX2ibiaAiaamVficnZlPdMkDu23BHD4NamqCFx9pu97UPvGgBA2icdqgj13B5suREJ2OAUbAl7ULTZZgVbKkEj22iaakDXzqvocX7AWTMkrLic/132',
+          wx_nickname: '蝉來蝉去（15191552921）',
+          finder_username: 'v2_060000231003b20faec8c4ea8b1cc3ddc702ed34b0773678d266b8723817cb6e0e060b6e9d23@finder',
+          ban_publish: '' * 1,
+          acct_ban: '0' * 1,
+          acct_secret: '0' * 1,
+          finder_user_status: '0' * 1,
+              },
+      has_video_masssend_findervideo_priv: '0' * 1,
+      nick_name: '蝉来蝉去'
+          },
+    mplog: {
+            needUplog: "0" * 1,
+      beginTime: "",
+      endTime: "",
+      uploadCGIName: ""
+          },
+    acl: {
+  
+            "msg_acl": {
+        "can_text_msg": '1' * 1,
+        "can_image_msg": '1' * 1,
+        "can_voice_msg": '1' * 1,
+        "can_video_msg": '1' * 1,
+        "can_app_msg": '1' * 1,
+        "can_commodity_app_msg": '0' * 1,
+        "can_card_msg": "0" * 1 || 0, // @cunjinli改掉
+        "can_use_shortvideo": "0" * 1,
+        "can_use_reprintapply_list": "0" * 1, ///原创二期上线前文库和订阅都暂缓不上了，只上授权申请，这里新增授权申请入口 @tunnyhuang @tedwang
+        "can_upload_2m_more_gif": "1" * 1, // 是否允许上传5M之内的Gif
+      },
+      "material_acl": {
+        "can_text_msg": '1' * 1,
+        "can_image_msg": '1' * 1,
+        "can_voice_msg": '1' * 1,
+        "can_video_msg": '1' * 1,
+        "can_app_msg": '1' * 1,
+        "can_commodity_app_msg": '0' * 1,
+        "can_card_msg": "0" * 1 || 0, // @cunjinli改掉
+        "can_use_shortvideo": "0" * 1,
+        "can_use_reprintapply_list": "0" * 1 ///原创二期上线前文库和订阅都暂缓不上了，只上授权申请，这里新增授权申请入口 @tunnyhuang @tedwang
+      },
+      "ivr_acl": {
+        "can_text_msg": '1' * 1,
+        "can_image_msg": '1' * 1,
+        "can_voice_msg": '1' * 1,
+        "can_video_msg": '1' * 1,
+        "can_app_msg": '1' * 1,
+        "can_commodity_app_msg": '0' * 1
+      },
+      "merchant_acl": {
+        "can_use_pay_tmpl": "" * 1,
+        "can_use_account_manage": "" * 1,
+        "wxa_mall_status": "0" * 1
+      },
+      "product_acl": {
+        "can_see_product": "0" * 1,
+        "can_not_use_product": "" * 1,
+        "can_c2c_reply": "2" * 1
+      },
+      "base_acl": {
+        "can_use_replay": "0" * 1,
+        "can_use_new_publish": "1" * 1,
+        "is_send_findervideo_gray_user": "1" * 1  // 视频号消息二期灰度
+      },
+      "env_acl": {
+        "hostrole": "0" * 1
+      },
+                      // x系统实验白名单
+      "exp_acl": [
+              ],
+                            "ad_system": {
+        "can_use_sp": "" * 1,
+                  "can_use_new_ad": "" * 1
+              }
+    },
+    ban_func_list: [
+                                          ],
+    events: {}, // 全局的事件绑定
+    canUseVuest: "",
+    load_done: "",
+    load_done_detail: [
+        ],
+  };
+  
+  window.wx.getSeq = function() { // 全局生成唯一时间戳seq,用于和svr_time确定文件上传顺序
+    return new Date().getTime();
+  };
+  
+  delete window.handlerNickname;
+  </script>  <script crossorigin type="text/javascript" src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/modules/common/badjs700567.js"></script>  <script crossorigin type="text/javascript" src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/modules/base/jserr700567.js"></script>    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="baidu-site-verification" content="code-3r8LPtTwZC" /><meta name="msvalidate.01" content="FF6EE86AAF4EBBEFCB5FFF7A2ED6CF6C" /><meta name="google-site-verification" content="Lfue77RLSBGsSNJU7BOdDwTC7lDru1Oug60qmVBNbT4" /><meta name="renderer" content="webkit"><!-- <meta name="referrer" content="origin-when-crossorigin"> --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover"><script type="text/javascript">
+  //上报测速 --初始点
+  window._points = [+new Date()];
+
+  //上报测速 --js加载完成点
+  function wx_main(mod) {
+    window._points && (window._points[3] = +new Date());
+  };
+
+  window.wx.uin = "3943274291" || "0";
+
+  //如果cdn挂了资源拉不到 触发此上报
+  window.wx_loaderror = function(ele) {
+    var _img = new Image();
+    var key = 63;
+    if (ele && ele.tagName && ele.tagName.toLowerCase() == "script") {
+      key = 64;
+      //js资源挂了页面报到特殊地方
+      if (typeof BJ_REPORT != "undefined") {
+        BJ_REPORT.destory&&BJ_REPORT.destory();
+      }
+    }
+    if (typeof BJ_REPORT != "undefined") {
+      _img.src = "https://badjs.weixinbridge.com/badjs?id=" + BJ_REPORT.IDS.LINK + "&uin="+(wx&&wx.uin)+"&msg=" + encodeURIComponent("link_error:" + (ele && (ele.href || ele.src))) + "|link&from=" + encodeURIComponent(location.href) + "&level=4&_t=" + (+new Date);
+    }
+    var key_img = new Image();
+    key_img.src = "/misc/jslog?id="+key+"&content="+encodeURIComponent(ele && (ele.href || ele.src))+"&level=error";
+
+    if (typeof WX_BJ_REPORT != "undefined" && WX_BJ_REPORT.BadJs && typeof WX_BJ_REPORT.BadJs.report == "function") {
+      if (ele && ele.tagName && ele.tagName.toLowerCase() == "script") {
+        WX_BJ_REPORT.BadJs.report("jsLoadedError", ele.href || ele.src, { mid: "mpResourceMonitor" })
+      } else {
+        WX_BJ_REPORT.BadJs.report("cssLoadedError", ele.href || ele.src, { mid: "mpResourceMonitor" })
+      }
+    }
+  };
+</script>  <title>公众号</title>  <link id="shortcut" rel="shortcut icon" type="image/x-icon" href="https://res.wx.qq.com/a/fed_upload/9300e7ac-cec5-4454-b75c-f92260dd5b47/logo-mp.ico"><link rel="mask-icon" href="https://res.wx.qq.com/a/wx_fed/assets/res/MjliNWVm.svg" color="#4C4C4C"><link rel="apple-touch-icon-precomposed" href="https://res.wx.qq.com/a/wx_fed/assets/res/OTE0YTAw.png"><link rel="stylesheet" type="text/css" href="https://res.wx.qq.com/mpres/zh_CN/htmledition/js/base/layout_head700568.css"/><!-- <link rel="stylesheet" type="text/css" href="https://res.wx.qq.com/mpres/zh_CN/htmledition/comm_htmledition/style/base/base.css?i18n"/> --> <link rel="stylesheet" type="text/css" href="https://res.wx.qq.com/mpres/zh_CN/htmledition/js/base/base700568.css"/><link rel="stylesheet" type="text/css" href="https://res.wx.qq.com/mpres/zh_CN/htmledition/js/base/lib700568.css"/><!-- <link rel="stylesheet" type="text/css" href="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/modules/base/style/base.css?i18n"/> --><link rel="stylesheet" type="text/css" href="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/modules/base/style/base700567.css"/><!--#0002#--><!--%0002%--><script type="text/javascript">
+  if(/(infringementlogin)/.test(window.location.href)) {
+    document.title = '微信公众平台'
+    document.getElementById('shortcut').href = 'https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico';
+  } 
+</script><script type="text/javascript">
+  if (Math.random() < 0.01) {
+    try {
+      var xssdetectjs = 'https://js.aq.qq.com/js/aq_common.js';
+      var script = document.createElement('script');
+      script.src = xssdetectjs;
+      var head = document.getElementsByTagName('head')[0];
+      head.appendChild(script);
+    } catch (e) {}
+  }
+
+  // Windows下设置滚动条样式
+  if (navigator.userAgent.indexOf('Windows') > -1) {
+    var style = document.createElement('style');
+    style.innerHTML = '::-webkit-scrollbar-track-piece {background-color: #FFFFFF;} ::-webkit-scrollbar {width: 6px; height: 6px;} ::-webkit-scrollbar-thumb {background-color: #c2c2c2; background-clip: padding-box; min-height: 28px;} ::-webkit-scrollbar-thumb:hover {background-color: #A0A0A0;}';
+    document.head.appendChild(style);
+  }
+</script>        <link href="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/pages/modules~advanced/menusetting/menusetting~advanced/menusetting4Web1~album/edit/edit~album/list/list~b~modules.ea6ff6d3.css" rel="stylesheet"><link href="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/pages/vendors~advanced/menusetting/menusetting~advanced/menusetting4Web1~album/edit/edit~album/list/list~b~vendors.f2cc2ed7.css" rel="stylesheet"><link href="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/pages/modules~advanced/menusetting/menusetting~advanced/menusetting4Web1~album/edit/edit~cardticket/member~modules.ab5179ac.css" rel="stylesheet"><link href="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/pages/modules~advanced/menusetting/menusetting~advanced/menusetting4Web1~album/edit/edit~city/service_edit~modules.08b1ccd5.css" rel="stylesheet"><link href="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/pages/modules~advanced/menusetting/menusetting~advanced/menusetting4Web1~album/edit/edit~complain/public_c~modules.fb81b2e2.css" rel="stylesheet"><link href="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/pages/default~home/index/index_gray~media/publish_history/publish_history.22c5ae7d.css" rel="stylesheet"><link href="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/media/publish_history/publish_history.454ab618.css" rel="stylesheet">  </head>  <body class="zh_CN weui-desktop-page_base ">        <div id="body" class="mp-body">      <div id="js_container_box" class="weui-desktop-layout weui-desktop-layout_global">        <!-- 商户特殊权限用户不显示菜单 -->                <div class="weui-desktop-layout__side_pop__mask" id="js_mp_sidemenu_pop_mask"></div>        <div id="m_open" class="weui-desktop__unfold-menu-opr-new" style="display: none;">          <span class="weui-desktop-logo">            <i class="weui-desktop-logo__inner"></i>          </span>          <i class="icon_unfold"></i>        </div>        <div id="js_mp_sidemenu" class="weui-desktop-layout__side weui-desktop-layout__side-menu">          <a id="m_fold"  href="javascript:;" class="weui-desktop-btn__head-opr weui-desktop__fold-menu-opr">收起</a>            <!-- 新版导航栏 -->  <div class="js_global_menu weui-desktop-layout__side-menu__container" :class="{    'weui-desktop-layout__side-menu__overflown': menuOverflown  }">    <div class="weui-desktop-layout__side-menu__header">      <h1 class="weui-desktop-logo"><a href="/" title="公众号" class="weui-desktop-logo__inner"></a></h1>    </div>    <mp-menu ref="menu" @overflow="onOverflow"></mp-menu>    <div class="weui-desktop-layout__side-menu__footer">      <div id="js_notify_box"></div>      <div id="js_account_box"></div>    </div>  </div>        </div>                <div id="js_mp_main_content" class="weui-desktop-layout__main">          <div class="weui-desktop-layout__main__area">            <div class="weui-desktop-layout__main__inner">              <!-- 页面公告 @jaminqian -->              <div id="_announcement" v-if="list && list.length && list.length !== 0">  <mp-msg v-for="(item, idx) in list" :key="idx" size="mini" :icon="item.type === 0 ? 'info' : 'warn'" :title="item.content"  :closable="item.type === 0 ? true : false" highlight></mp-msg></div>              <!-- 能力封禁专用 -->              <div id="app_ban" style="display:none"></div>              <div id="app" style="visibility:hidden;">                <mp-toptips :type="baseVueToptipsData.type" :msg="baseVueToptipsData.msg" v-model="baseVueToptipsData.isShow"></mp-toptips>                <div id="app">  <div class="publish_history_page">    <mp-block :desc="publishHint">        <template slot="title">          <div class="publish_listory_title">            <div>发表记录</div>            <mp-popover class="popover-adjust" width="230" trigger="hover">              <i slot="target" class="icon-svg-common-ask local-top"></i>              <span slot="content">                <div class="weui-desktop-popover__desc2">发表相关数据均为实时人数</div>              </span>            </mp-popover>          </div>        </template>        <!-- <template slot="head-append-in">          <mp-tab :tabs="tabs" :selected="currentTab" @click="tabClick"></mp-tab>        </template> -->        <div class="head_append_in" slot="head-append-in">          <mp-button class="header_button" :class="{'currentTab': type===0}" @click="jumpToUrl(0)" type="primary">全部 {{current_count[0] | formatThousandth}}</mp-button>          <mp-button class="header_button" :class="{'currentTab': type===1}" @click="jumpToUrl(1)" type="primary">{{publishWording}} {{current_count[1] | formatThousandth}}</mp-button>          <mp-button class="header_button" :class="{'currentTab': type===2}" @click="jumpToUrl(2)" type="primary">未通知 {{current_count[2] | formatThousandth}}</mp-button>          <mp-button  class="header_button" :class="{'currentTab': type===3}" @click="jumpToFeaturedlist" type="primary">精选 {{featured_count}}</mp-button>          <!-- <a href="/cgi-bin/appmsgpublish?sub=list&begin=0&count=10&type=0">111</a> -->          <mp-search v-if="type !== 3" class="header_search" placeholder="输入标题/关键词/文章链接" @search="searchPage" v-model="currentQuery" :clear="true" @clear="onClear"></mp-search>        </div>    </mp-block>    <div class="publish_content publish_record_history">      <template v-if="list.length > 0">        <mp-publish-record :list="list" :can-use-public-tag="canUsePublicTag" :realname-type="realnameType" :customer-type="customerType" :keyword="keyword"></mp-publish-record>        <mp-pagination mode="normal" :total-num="current_count[type]" :per-page="perPage" :current="currentPage" @page-change="pageChange"></mp-pagination>      </template>      <div v-else-if="type !== 3" class="publish-list__empty">        暂无发表记录  <div v-if="!isUrl">，可尝试使用文章链接重新搜索</div>      </div>      <div v-else class="publish-list__empty">        暂无精选内容      </div>    </div>  </div>  <mp-featured-list-dialog    v-if="featureDialogProps.show"    :list="featuredlist"    :has-two-msg="featureDialogProps.hasTwoMsg"    :has-text="featureDialogProps.hasText"    :is-text="featureDialogProps.isText"    :show="featureDialogProps.show"    :loading="featureDialogProps.loading"    @replace="onFeaturedCardReplace"    @cancel="onFeaturedCardCancel"  ></mp-featured-list-dialog></div>              </div>            </div>          </div>        </div>      </div>    </div>    <div class="mp-foot" id="footer" style="display: none;">    <div class="weui-desktop-foot">      <div class="weui-desktop-foot__info">        <p class="weui-desktop-links weui-desktop-link-group weui-desktop-link-group_split">                <a class="weui-desktop-link" href="http://www.tencent.com/zh-cn/index.shtml" target="_blank">关于腾讯</a>        <a class="weui-desktop-link" href="/cgi-bin/announce?action=getannouncement&key=1503979103&version=1&lang=zh_CN&platform=2" target="_blank">服务协议</a>        <a class="weui-desktop-link" href="/webpoc/ruleCenter?type=oa " target="_blank">规则中心</a>        <!-- <a class="weui-desktop-link" href="/cgi-bin/opshowpage?action=dispelinfo&lang=zh_CN&begin=1&count=9" target="_blank">辟谣中心</a> -->        <a class="weui-desktop-link" href="http://kf.qq.com/product/weixinmp.html" target="_blank">腾讯客服</a>                        <!-- <a class="weui-desktop-link" href="mailto:weixinmp@qq.com" target="_blank">联系邮箱</a> -->                                    <!--<a class="weui-desktop-link" href="/cgi-bin/readtemplate?t=news/operation_guide_tmpl" target="_blank">运营中心</a>-->            <!-- <a class="weui-desktop-link" href="http://kf.qq.com/product/weixinmp.html" target="_blank">腾讯客服</a> -->            <a class="weui-desktop-link" href="/acct/infringement?action=getmanual&t=infringement/manual&type=1&lang=zh_CN&token=364105463" target="_blank">侵权投诉</a>            <span class="weui-desktop-link">反馈官号weixingongzhong</span>                                        <a class="weui-desktop-link" href="/advanced/mplog?action=index" target="_blank">上传日志</a>        </p>      </div>      <div class="weui-desktop-foot__extra">        <!--#00002#-->        <p class="weui-desktop-link" class="copyright">Copyright &copy; 2012-2024 Tencent. All Rights Reserved.</p>        <!--%00002%-->      </div>    </div></div><script type="text/javascript">
+    //上报测速 --dom加载完成点
+    window._points&&(window._points[2]=+new Date());
+    // 初始化未读数
+    (function() {
+      // 初始化消息未读
+      var eleHeadBoxAccountNum = document.getElementById('headBoxAccountNum')
+      if (eleHeadBoxAccountNum) {
+        var headBoxAccountNum = parseInt(document.getElementById('headBoxAccountNum').dataset.notify)
+        if (headBoxAccountNum) {
+          eleHeadBoxAccountNum.style.display = 'block'
+          eleHeadBoxAccountNum.innerHTML = headBoxAccountNum > 99 ? '99+' : headBoxAccountNum
+        }
+      }
+
+      function setFootBlock() {
+        const foot = document.getElementById('footer')
+        if (foot) {
+          foot.style.display = 'block'
+        }
+      }
+
+      try {
+        //判断是否需要在login页面抬高footer
+        const ua = navigator.userAgent;
+        if (/(iPhone|iPod|iOS)/i.test(ua) || /(Android)/i.test(ua)) {
+          const footer = document.querySelector('#footer')
+          footer.classList.add('login-lift-footer')
+        }
+
+        const is_mpapp = /MPAPP\/([\d\.]+)/i.test(ua);
+
+        if (!is_mpapp) {
+          setFootBlock()
+        }
+      } catch (e) {
+        setFootBlock()
+        console.error(e);
+      }
+    })();
+</script>    <script type="text/javascript">
+  var TOPBAR_FADEOUT = 'topbar-fadeout';
+  var minWidthMedia = 1169;
+
+  function hasClass(obj, cls) {
+    return obj.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+  }
+  function addClass(obj, cls) {
+    if (!hasClass(obj, cls)) {
+      obj.className += " " + cls;
+    }
+  }
+  function removeClass(obj, cls) {
+    if (hasClass(obj, cls)) {
+      var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+      obj.className = obj.className.replace(reg, '');
+    }
+  }
+
+  function setBodyMinHeight() {
+    var header = document.getElementById('mp_header');
+    var footer = document.getElementById('footer');
+    if (!footer) return;
+    document.getElementById('body').style.minHeight = document.documentElement.clientHeight - ((header && header.clientHeight) || 0) - footer.clientHeight - 96 + 'px';
+  }
+  setBodyMinHeight();
+
+  function hideSidebar() {
+    // sessionStorage.setItem('HIDE_SIDE_MENU', '1');
+    removeClass(document.body, 'weui-desktop-layout_unfold');
+    removeClass(document.body, 'weui-desktop-layout_unfold_large');
+    window.top.postMessage('hideOprGroup', '*');
+    // addClass(document.body, 'weui-desktop-layout_fold');
+    // setBodyMinHeight();
+    // setTimeout(() => {
+    //   document.getElementById('js_mp_sidemenu').style.display = 'none';
+    // }, 300);
+  }
+  function showSidebar() {
+    // sessionStorage.setItem('HIDE_SIDE_MENU', '0');
+    // document.getElementById('js_mp_sidemenu').style.display = 'block';
+    // if (document.documentElement.clientWidth >= minWidthMedia) {
+    //   addClass(document.body, 'weui-desktop-layout_unfold_large');
+    // }
+    setTimeout(function () {
+      // removeClass(document.body, 'weui-desktop-layout_fold');
+      if (document.documentElement.clientWidth < minWidthMedia) {
+        addClass(document.body, 'weui-desktop-layout_unfold');
+      }
+      // setBodyMinHeight();
+    }, 10);
+    window.top.postMessage('showOprGroup', '*');
+  }
+  // function initSideMenu() {
+  //   if (document.documentElement.clientWidth >= minWidthMedia && sessionStorage.getItem('HIDE_SIDE_MENU') === '1') {
+  //     removeClass(document.body, 'weui-desktop-layout_unfold', 'weui-desktop-layout_unfold_large');
+  //     addClass(document.body, 'weui-desktop__unset-transition', 'weui-desktop-layout_fold');
+  //     setBodyMinHeight();
+  //     document.getElementById('js_mp_sidemenu').style.display = 'none';
+  //     setTimeout(() => {
+  //       removeClass(document.body, 'weui-desktop__unset-transition');
+  //     }, 300);
+  //   }
+  // }
+  // initSideMenu();
+
+  function windowResizeHanlder() {
+    setBodyMinHeight();
+    if (document.documentElement.clientWidth >= minWidthMedia && hasClass(document.body, 'weui-desktop-layout_unfold')) {
+      removeClass(document.body, 'weui-desktop-layout_unfold');
+    } else {
+      removeClass(document.body, 'weui-desktop-layout_unfold_large');
+    }
+    documentScrollHanlder();
+  }
+
+  var notAddTopbarFadeout = false;
+  function documentScrollHanlder() {
+    var classList = document.body.classList;
+    if (document.documentElement.clientWidth > minWidthMedia) {
+      var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+      var header = document.getElementById('mp_header');
+      if (notAddTopbarFadeout) return;
+      if (header) {
+        classList[document.body.offsetHeight - window.innerHeight > header.clientHeight && scrollTop > 0 ? 'add' : 'remove'](TOPBAR_FADEOUT);
+      } else {
+        // classList[scrollTop > 0 ? 'add' : 'remove'](TOPBAR_FADEOUT);
+      }
+    } else {
+      classList.remove(TOPBAR_FADEOUT);
+    }
+  }
+
+  var mopen = document.getElementById('m_open');
+
+  window.addEventListener('resize', windowResizeHanlder);
+  document.addEventListener('scroll', documentScrollHanlder); // 滚动页面时自动隐藏topbar
+  mopen && mopen.addEventListener('click', showSidebar);
+  document.getElementById('m_fold').addEventListener('click', hideSidebar);
+  document.getElementById('js_mp_sidemenu_pop_mask').addEventListener('click', hideSidebar);
+  document.getElementById('body').addEventListener('transitionstart', function(e) {
+    if (e.target === e.currentTarget && e.propertyName === 'padding-top') {
+      notAddTopbarFadeout = true;
+    }
+  });
+  document.getElementById('body').addEventListener('transitionend', function(e) {
+    if (e.target === e.currentTarget && e.propertyName === 'padding-top') {
+      notAddTopbarFadeout = false;
+    }
+  });
+</script>    <div id="_faq" class="x"></div>    <!--  -->    <script type="text/javascript">var PAGE_MID="mmbizweb:media/publish_history/publish_history.html";</script><script type="text/javascript">
+if (typeof WX_BJ_REPORT != "undefined" && WX_BJ_REPORT.BadJs) {
+  if (typeof PAGE_MID == "undefined") {
+    window.PAGE_MID = "";
+  }
+  WX_BJ_REPORT.BadJs.init(wx.uin, PAGE_MID, 'mmbizweb').hook(function (data) {
+    if (data.view !== 'mmbizweb') { // 返回码上报
+      return true;
+    } else { // 错误上报
+      data.cmdb_module = 'mmbizweb'; //添加cmdb_module
+      if (data.file && /^https\:\/\/(mp\.weixin\.qq\.com|res\.wx\.qq\.com)/.test(data.file) == false) {
+        return false;
+      }
+      // 兜底错误 没有file
+      if(data.name==="BadjsWindowError"&&!data.file){
+        return false;
+      }
+      // 非资源类错误（.html结尾 或者  没有monitor关键字 ）
+      if (/\.html$/i.test(data.mid) || !/monitor/i.test(data.mid)) {
+        BJ_REPORT.report(data); //保留badjs上报
+      }
+    }
+  });
+  if (typeof seajs == "undefined") {
+    WX_BJ_REPORT.BadJs.mark({ seaLoaded: 0 });
+  } else {
+    WX_BJ_REPORT.BadJs.mark({ seaLoaded: 1 }); //seajs加载成功
+  }
+  WX_BJ_REPORT.TryJs.run();
+  WX_BJ_REPORT.BadJs.mark({ tryjs: 1 }); //tryjs执行完
+  /*Vue.config.errorHandler = function(err, vm, info) {
+    console.error(err);
+    if (info) {
+      err._info = "[vue:" + JSON.stringify(info) + "]" + (err._info || "");
+    }
+    WX_BJ_REPORT.BadJs.onError(err);
+  };*/
+}
+
+function getico(i) {
+  var _img = new Image(1, 1);
+  _img.src = location.protocol + "//" + location.host + "/misc/getico" + "?location=" + (i || -1) + "&rand=" + Math.random() + window.wx.commonData.data.param;
+};
+window._points && (window._points[4] = +new Date()); // DOMContentLoaded dom树解析完成
+getico('17102');
+
+// todo: 将request的上报改造成别的形式
+// seajs.on('request', function(reqData) {
+//   setTimeout((function(data) {
+//     return function() {
+//       if (location.host.indexOf('dev') === 0 || location.host.indexOf('localhost') === 0) {
+//         return;
+//       }
+//       if (/[a-f0-9]{6}\.(js|css)$/.test(data.requestUri)) {
+//         return;
+//       }
+
+//       var opts = {
+//         res: data.requestUri,
+//         page: location.pathname + '?' + location.search
+//       };
+//       BJ_REPORT && BJ_REPORT.monitor(59, 'res[' + opts.page + ']; page[' + opts.res + ']', 121);
+//       if (typeof WX_BJ_REPORT != "undefined" && WX_BJ_REPORT.BadJs && typeof WX_BJ_REPORT.BadJs.report === 'function') {
+//         WX_BJ_REPORT.BadJs.report('ResoucenoVersion', data.requestUri, { mid: "mpResourceMonitor" });
+//       }
+//     };
+//   })(reqData), 3000);
+// });
+
+(function() {
+  /**
+   * 获取a标签对象的search参数和hash参数，会自动补全公共参数
+   *
+   * @param  {HTMLElement} target a链接元素
+   * @param  {Object} params 附加参数
+   * @return {Object}        含hash和search参数的对象
+   */
+  function getLinkInfo(target, params) {
+    var query = {};
+    var search = target.search;
+    var hash = target.hash;
+    var baseQuery = {
+      token: '364105463',
+      lang: 'zh_CN'
+    };
+
+    if (search) {
+      search = search.slice(1);
+      search = search.split('&');
+
+      if (search.length) {
+        for (var i = 0; i < search.length; i++) {
+          var idx = search[i].indexOf('=');
+          query[search[i].slice(0, idx)] = search[i].slice(idx + 1);
+        }
+      }
+
+    }
+
+    // 把附加参数对象中的参数补上
+    if (params) {
+      for (var key in params) {
+        if (!query[key] && params.hasOwnProperty(key)) {
+          query[key] = params[key];
+        }
+      }
+    }
+
+    // 补上公共参数
+    for (var key in baseQuery) {
+      if (!query[key] && baseQuery.hasOwnProperty(key)) {
+        query[key] = baseQuery[key];
+      }
+    }
+
+    var newSearch = [];
+    for (var queryKey in query) {
+      if (query.hasOwnProperty(queryKey)) {
+        newSearch.push(queryKey + '=' + query[queryKey]);
+      }
+    }
+    newSearch = '?' + newSearch.join('&');
+    return {
+      hash: hash,
+      search: newSearch
+    };
+  }
+
+  /**
+   * 全局函数，重载页面，用于自动化测试，会将url存入store
+   */
+  window.reloadPage = function(force) {
+    window.location.reload(force);
+  }
+
+  /**
+   * 全局函数，打开一个链接，将自动补全公共参数
+   *
+   * @param  {string} link   要打开的链接，可以是https://mp.weixin.qq.com/cgi-bin/home形式的，也可以是/cgi-bin/home形式的，也可以带参数比如/cgi-bin/home?key=value
+   * @param  {Object} params 链接search参数
+   * @param  {boolean} newTab 是否使用新的窗口打开
+   */
+  window.openUrl = function(link, params, newTab) {
+    var target = document.createElement('a');
+    target.href = link;
+    var linkInfo = getLinkInfo(target, params);
+    var idx = link.indexOf('?') !== -1 ? link.indexOf('?') : (link.indexOf('#') !== -1 ? link.indexOf('#') : link.length);
+    var url = link.slice(0, idx);
+    url += linkInfo.search + linkInfo.hash;
+    if (!newTab) {
+      location.href = url;
+    } else {
+      window.open(url);
+    }
+  };
+
+  // 全局代理，处理a链接参数
+  document.body.addEventListener('click', function(e) {
+
+    var target = e.target;
+    // 到了body也结束，兜底
+    while (target && target.tagName !== 'A' && target.tagName !== 'BODY') {
+      target = target.parentNode;
+    }
+
+    // 只有本站的链接才处理
+    if (
+      !target ||
+      !target.href ||
+      target.href.indexOf('javascript') === 0 ||
+      (target.host !== location.host && target.getAttribute('href').indexOf('/') !== 0)
+    ) {
+      return;
+    }
+
+    var linkInfo = getLinkInfo(target);
+    var idx = target.href.indexOf('?') !== -1 ? target.href.indexOf('?') : (target.href.indexOf('#') !== -1 ? target.href.indexOf('#') : target.href.length);
+    var url = target.href.slice(0, idx);
+
+    target.href = url + linkInfo.search + linkInfo.hash;
+  });
+  // 针对a链接右键在新标签打开处理参数
+  document.body.addEventListener('contextmenu', function(e) {
+
+    var target = e.target;
+    // 到了body也结束，兜底
+    while (target && target.tagName !== 'A' && target.tagName !== 'BODY') {
+      target = target.parentNode;
+    }
+
+    // 只有本站的链接才处理
+    if (
+      !target ||
+      !target.href ||
+      target.href.indexOf('javascript') === 0 ||
+      (target.host !== location.host && target.getAttribute('href').indexOf('/') !== 0)
+    ) {
+      return;
+    }
+
+    var linkInfo = getLinkInfo(target);
+    var idx = target.href.indexOf('?') !== -1 ? target.href.indexOf('?') : (target.href.indexOf('#') !== -1 ? target.href.indexOf('#') : target.href.length);
+    var url = target.href.slice(0, idx);
+
+    target.href = url + linkInfo.search + linkInfo.hash;
+  });
+
+})();
+
+if (document.querySelectorAll) {
+  var jsNavItems = document.querySelectorAll('.js_nav_item');
+
+  for (var i = 0; i < jsNavItems.length; i++) {
+    jsNavItems[i].addEventListener('click', function(e) {
+      try {
+        var itemId = e.currentTarget.getAttribute('data-id');
+        var itemNew = e.currentTarget.getAttribute('data-new');
+        var itemHref = e.currentTarget.getAttribute('href');
+
+        if (!itemHref) { // 没有href则找父节点A标签
+          var tmpNode = e.currentTarget.parentNode;
+          while (tmpNode && !/^BODY$/i.test(tmpNode.nodeName)) { // 存在节点且非body
+            if (/^A$/i.test(tmpNode.nodeName)) { // A标签
+              itemHref = tmpNode.getAttribute('href');
+              break;
+            }
+            tmpNode = tmpNode.parentNode;
+          }
+          if (!itemHref) { // 还是找不到href就放弃
+            return;
+          }
+        }
+
+        if (parseInt(itemNew) == 1) {
+          nativeAjax.post('/misc/navoperation', {
+            action: 'click',
+            id: itemId,
+            token: '364105463'
+          }, function(resp) {
+            console.log(resp);
+
+            //这里真正去做跳转
+            window.location.href = itemHref;
+          })
+        }
+
+        //阻止跳转 一定要消了红点才能跳转
+        if (itemHref != null && parseInt(itemNew) == 1) {
+          e.preventDefault();
+          return false;
+        }
+
+      } catch (e) {
+        //消红点报错就算了
+        console.log('cannot remove red dot');
+      }
+
+    }, true);
+  }
+}
+
+var nativeAjax = {};
+nativeAjax.x = function() {
+  if (typeof XMLHttpRequest !== 'undefined') {
+    return new XMLHttpRequest();
+  }
+  var versions = [
+    "MSXML2.XmlHttp.6.0",
+    "MSXML2.XmlHttp.5.0",
+    "MSXML2.XmlHttp.4.0",
+    "MSXML2.XmlHttp.3.0",
+    "MSXML2.XmlHttp.2.0",
+    "Microsoft.XmlHttp"
+  ];
+
+  var xhr;
+  for (var i = 0; i < versions.length; i++) {
+    try {
+      xhr = new ActiveXObject(versions[i]);
+      break;
+    } catch (e) {}
+  }
+  return xhr;
+};
+
+nativeAjax.send = function(url, callback, method, data, async) {
+  if (async ===undefined) {
+    async = true;
+  }
+  var x = nativeAjax.x();
+  x.open(method, url, async);
+  x.onreadystatechange = function() {
+    if (x.readyState == 4) {
+      callback(x.responseText)
+    }
+  };
+  if (method == 'POST') {
+    x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  }
+  x.send(data)
+};
+
+nativeAjax.get = function(url, data, callback, async) {
+  var query = [];
+  for (var key in data) {
+    query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+  }
+  nativeAjax.send(url + (query.length ? '?' + query.join('&') : ''), callback, 'GET', null, async)
+};
+
+nativeAjax.post = function(url, data, callback, async) {
+  var query = [];
+  for (var key in data) {
+    query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+  }
+  nativeAjax.send(url, callback, 'POST', query.join('&'), async)
+};
+</script><!-- <script onerror="wx_loaderror(this)" type="text/javascript" src="https://res.wx.qq.com/mpres/zh_CN/htmledition/js/vuest.js"></script>-->    <script type="text/javascript">var PAGE_MID="mmbizweb:media/publish_history/publish_history.html";</script><script type="text/javascript">
+if (!window.CGI_DATA) {
+window.CGI_DATA = {};
+}
+
+window.CGI_DATA['pages/media/publish_history'] = {
+dfs: ""
+}
+</script> <script type="text/javascript">
+// 后台在publish_page里会做转义 把引号变为&quot;因此优先读取publish_page_noencode
+  let publish_page;
+  let isPublishPageNoEncod;
+      publish_page = {"total_count":104,"publish_count":0,"masssend_count":104,"publish_list":[{"publish_type":101,"publish_info":"{&quot;type&quot;:9,&quot;msgid&quot;:1000000104,&quot;sent_info&quot;:{&quot;time&quot;:1723565138,&quot;func_flag&quot;:32770,&quot;is_send_all&quot;:true,&quot;is_published&quot;:0},&quot;sent_status&quot;:{&quot;total&quot;:303,&quot;succ&quot;:303,&quot;fail&quot;:0,&quot;progress&quot;:100,&quot;userprotect&quot;:0},&quot;sent_result&quot;:{&quot;msg_status&quot;:2,&quot;refuse_reason&quot;:&quot;&quot;,&quot;reject_index_list&quot;:[],&quot;update_time&quot;:1723565151},&quot;appmsg_info&quot;:[{&quot;share_type&quot;:0,&quot;appmsgid&quot;:2247484558,&quot;content_url&quot;:&quot;https:\\/\\/mp.weixin.qq.com\\/s?__biz=Mzk0MzI3NDI5MQ==&amp;mid=2247484558&amp;idx=1&amp;sn=ff66c226aa3d23e8345f6daf7f9646be&amp;chksm=c33724d2f440adc4ab705f38c3e38c2b20cca8962d057a91ce40e76ca55bed22a99b34951d32#rd&quot;,&quot;title&quot;:&quot;机器学习之Logistic Regression&quot;,&quot;is_deleted&quot;:false,&quot;copyright_status&quot;:11,&quot;copyright_type&quot;:1,&quot;read_num&quot;:10,&quot;like_num&quot;:0,&quot;comment_id&quot;:&quot;3589869002949820422&quot;,&quot;is_comment_enable&quot;:true,&quot;comment_num&quot;:1,&quot;reprint_num&quot;:0,&quot;vote_id&quot;:[],&quot;super_vote_id&quot;:[],&quot;cover&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLV97z6A7SA8zHAic6YaaD4KxXfEWiaPCo5Yia78XPiaOtV5vEFP3gEeS4aWSTrKxhuXxtObHibWdA7iaZyw\\/0?wx_fmt=jpeg&quot;,&quot;smart_product&quot;:0,&quot;modify_status&quot;:4,&quot;appmsg_like_type&quot;:2,&quot;can_delete_status&quot;:0,&quot;old_like_num&quot;:2,&quot;itemidx&quot;:1,&quot;is_pay_subscribe&quot;:0,&quot;is_from_transfer&quot;:0,&quot;public_tag_info&quot;:{&quot;public_tag_list&quot;:[],&quot;modify_times&quot;:0,&quot;init_tag_list_size&quot;:0},&quot;appmsg_album_info&quot;:{&quot;id&quot;:&quot;3585230555207335937&quot;,&quot;title&quot;:&quot;机器学习&quot;,&quot;album_id&quot;:3585230555207335937,&quot;appmsg_album_infos&quot;:[{&quot;id&quot;:&quot;3585230555207335937&quot;,&quot;title&quot;:&quot;机器学习&quot;,&quot;album_id&quot;:3585230555207335937,&quot;appmsg_album_infos&quot;:[],&quot;tagSource&quot;:4}]},&quot;digest&quot;:&quot;Logistic Regression&quot;,&quot;open_fansmsg&quot;:0,&quot;is_cooling_article&quot;:0,&quot;pic_cdn_url_235_1&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLV97z6A7SA8zHAic6YaaD4KxZTGJZvWKyjSibibBe0ojJGqMgw3EKYV21TZ7WIBTyx8SvL2ZFPPYYz5w\\/0?wx_fmt=jpeg&quot;,&quot;pic_cdn_url_16_9&quot;:&quot;&quot;,&quot;disable_recommend&quot;:0,&quot;line_info&quot;:{&quot;use_line&quot;:1,&quot;line_count&quot;:0,&quot;send_time&quot;:1723565147,&quot;is_appmsg_flag&quot;:1,&quot;is_use_flag&quot;:0},&quot;claim_source_type&quot;:0}],&quot;appmsgex&quot;:[],&quot;copy_type&quot;:77,&quot;copy_appmsg_id&quot;:100000896,&quot;new_publish&quot;:0}"},{"publish_type":101,"publish_info":"{&quot;type&quot;:9,&quot;msgid&quot;:1000000103,&quot;sent_info&quot;:{&quot;time&quot;:1723289240,&quot;func_flag&quot;:32770,&quot;is_send_all&quot;:true,&quot;is_published&quot;:0},&quot;sent_status&quot;:{&quot;total&quot;:302,&quot;succ&quot;:302,&quot;fail&quot;:0,&quot;progress&quot;:100,&quot;userprotect&quot;:0},&quot;sent_result&quot;:{&quot;msg_status&quot;:2,&quot;refuse_reason&quot;:&quot;&quot;,&quot;reject_index_list&quot;:[],&quot;update_time&quot;:1723289257},&quot;appmsg_info&quot;:[{&quot;share_type&quot;:0,&quot;appmsgid&quot;:2247484543,&quot;content_url&quot;:&quot;https:\\/\\/mp.weixin.qq.com\\/s?__biz=Mzk0MzI3NDI5MQ==&amp;mid=2247484543&amp;idx=1&amp;sn=abf1c0f68fbc197f2143a290bb140a04&amp;chksm=c3372423f440ad3592a2505fea95aadff01f053019d39866887b8a2a54ab4032094e75971d25#rd&quot;,&quot;title&quot;:&quot;机器学习之线性回归&quot;,&quot;is_deleted&quot;:false,&quot;copyright_status&quot;:11,&quot;copyright_type&quot;:1,&quot;read_num&quot;:11,&quot;like_num&quot;:0,&quot;comment_id&quot;:&quot;3585240201619996677&quot;,&quot;is_comment_enable&quot;:true,&quot;comment_num&quot;:0,&quot;reprint_num&quot;:0,&quot;vote_id&quot;:[],&quot;super_vote_id&quot;:[],&quot;cover&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLUMBKf6CibVZibv56qOOT8TcjhEjlYRQovojRicg9p0MuL1lfla4XXxalgRxQ0icsVzR2wlxXzXribNiaTw\\/0?wx_fmt=jpeg&quot;,&quot;smart_product&quot;:0,&quot;modify_status&quot;:4,&quot;appmsg_like_type&quot;:2,&quot;can_delete_status&quot;:0,&quot;old_like_num&quot;:2,&quot;itemidx&quot;:1,&quot;is_pay_subscribe&quot;:0,&quot;is_from_transfer&quot;:0,&quot;public_tag_info&quot;:{&quot;public_tag_list&quot;:[],&quot;modify_times&quot;:0,&quot;init_tag_list_size&quot;:0},&quot;appmsg_album_info&quot;:{&quot;id&quot;:&quot;3585230555207335937&quot;,&quot;title&quot;:&quot;机器学习&quot;,&quot;album_id&quot;:3585230555207335937,&quot;appmsg_album_infos&quot;:[{&quot;id&quot;:&quot;3585230555207335937&quot;,&quot;title&quot;:&quot;机器学习&quot;,&quot;album_id&quot;:3585230555207335937,&quot;appmsg_album_infos&quot;:[],&quot;tagSource&quot;:3}]},&quot;digest&quot;:&quot;机器学习之线性回归&quot;,&quot;open_fansmsg&quot;:0,&quot;is_cooling_article&quot;:0,&quot;pic_cdn_url_235_1&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLUMBKf6CibVZibv56qOOT8TcjzjoWJ4ia4oo3Rymoq3K5t5gnIHicg55Fq43EOOXHtPhhntMr5gnk8pUA\\/0?wx_fmt=jpeg&quot;,&quot;pic_cdn_url_16_9&quot;:&quot;&quot;,&quot;disable_recommend&quot;:0,&quot;line_info&quot;:{&quot;use_line&quot;:1,&quot;line_count&quot;:0,&quot;send_time&quot;:1723289253,&quot;is_appmsg_flag&quot;:1,&quot;is_use_flag&quot;:0},&quot;claim_source_type&quot;:0}],&quot;appmsgex&quot;:[],&quot;copy_type&quot;:77,&quot;copy_appmsg_id&quot;:100000858,&quot;new_publish&quot;:0}"},{"publish_type":101,"publish_info":"{&quot;type&quot;:9,&quot;msgid&quot;:1000000102,&quot;sent_info&quot;:{&quot;time&quot;:1723161778,&quot;func_flag&quot;:32770,&quot;is_send_all&quot;:true,&quot;is_published&quot;:0},&quot;sent_status&quot;:{&quot;total&quot;:302,&quot;succ&quot;:302,&quot;fail&quot;:0,&quot;progress&quot;:100,&quot;userprotect&quot;:0},&quot;sent_result&quot;:{&quot;msg_status&quot;:2,&quot;refuse_reason&quot;:&quot;&quot;,&quot;reject_index_list&quot;:[],&quot;update_time&quot;:1723161798},&quot;appmsg_info&quot;:[{&quot;share_type&quot;:0,&quot;appmsgid&quot;:2247484505,&quot;content_url&quot;:&quot;https:\\/\\/mp.weixin.qq.com\\/s?__biz=Mzk0MzI3NDI5MQ==&amp;mid=2247484505&amp;idx=1&amp;sn=32b480ad603e0ae8db5c5304e64de776&amp;chksm=c3372405f440ad1303619712a9c89b0d14309614588ef57e1a3963f1352337296209c079f2ad#rd&quot;,&quot;title&quot;:&quot;用python制作简易中国象棋程序&quot;,&quot;is_deleted&quot;:false,&quot;copyright_status&quot;:11,&quot;copyright_type&quot;:1,&quot;read_num&quot;:18,&quot;like_num&quot;:0,&quot;comment_id&quot;:&quot;3583101731548069891&quot;,&quot;is_comment_enable&quot;:true,&quot;comment_num&quot;:1,&quot;reprint_num&quot;:0,&quot;vote_id&quot;:[],&quot;super_vote_id&quot;:[],&quot;cover&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLXRyUibYU6s4m04JDfKYNAZwLDrTxoxxcFkDrlSARGp7x87M5FZia27OeSQO0WiaXxcgU7PuNS0lbwPw\\/0?wx_fmt=jpeg&quot;,&quot;smart_product&quot;:0,&quot;modify_status&quot;:4,&quot;appmsg_like_type&quot;:2,&quot;can_delete_status&quot;:0,&quot;old_like_num&quot;:5,&quot;itemidx&quot;:1,&quot;is_pay_subscribe&quot;:0,&quot;is_from_transfer&quot;:0,&quot;public_tag_info&quot;:{&quot;public_tag_list&quot;:[],&quot;modify_times&quot;:0,&quot;init_tag_list_size&quot;:0},&quot;appmsg_album_info&quot;:{&quot;id&quot;:&quot;3566402168506449920&quot;,&quot;title&quot;:&quot;编程学习&quot;,&quot;album_id&quot;:3566402168506449920,&quot;appmsg_album_infos&quot;:[{&quot;id&quot;:&quot;3566402168506449920&quot;,&quot;title&quot;:&quot;编程学习&quot;,&quot;album_id&quot;:3566402168506449920,&quot;appmsg_album_infos&quot;:[],&quot;tagSource&quot;:4}]},&quot;digest&quot;:&quot;之前用Java实现了一个简易的中国象棋程序，本文使用python达到了同样的效果。&quot;,&quot;open_fansmsg&quot;:0,&quot;is_cooling_article&quot;:0,&quot;pic_cdn_url_235_1&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLXRyUibYU6s4m04JDfKYNAZw9IDqMbCiaw6o2ibjDXcjIFShxAXGVuJicuukQBCgQAFFFqSicTcjkATnww\\/0?wx_fmt=jpeg&quot;,&quot;pic_cdn_url_16_9&quot;:&quot;&quot;,&quot;disable_recommend&quot;:0,&quot;line_info&quot;:{&quot;use_line&quot;:1,&quot;line_count&quot;:0,&quot;send_time&quot;:1723161793,&quot;is_appmsg_flag&quot;:1,&quot;is_use_flag&quot;:0},&quot;claim_source_type&quot;:0}],&quot;appmsgex&quot;:[],&quot;copy_type&quot;:77,&quot;copy_appmsg_id&quot;:100000849,&quot;new_publish&quot;:0}"},{"publish_type":101,"publish_info":"{&quot;type&quot;:9,&quot;msgid&quot;:1000000101,&quot;sent_info&quot;:{&quot;time&quot;:1722921821,&quot;func_flag&quot;:32770,&quot;is_send_all&quot;:true,&quot;is_published&quot;:0},&quot;sent_status&quot;:{&quot;total&quot;:304,&quot;succ&quot;:304,&quot;fail&quot;:0,&quot;progress&quot;:100,&quot;userprotect&quot;:0},&quot;sent_result&quot;:{&quot;msg_status&quot;:2,&quot;refuse_reason&quot;:&quot;&quot;,&quot;reject_index_list&quot;:[],&quot;update_time&quot;:1722921842},&quot;appmsg_info&quot;:[{&quot;share_type&quot;:0,&quot;appmsgid&quot;:2247484496,&quot;content_url&quot;:&quot;https:\\/\\/mp.weixin.qq.com\\/s?__biz=Mzk0MzI3NDI5MQ==&amp;mid=2247484496&amp;idx=1&amp;sn=8fa15f9de33b7407c92c7093dae3f48c&amp;chksm=c337240cf440ad1a47b2f9d6cb91eecb1d79c430c6596648dc513900a7279e83148568bf1d26#rd&quot;,&quot;title&quot;:&quot;早起小语（788-809）&quot;,&quot;is_deleted&quot;:false,&quot;copyright_status&quot;:100,&quot;copyright_type&quot;:0,&quot;read_num&quot;:12,&quot;like_num&quot;:0,&quot;comment_id&quot;:&quot;3579075932268429313&quot;,&quot;is_comment_enable&quot;:true,&quot;comment_num&quot;:1,&quot;vote_id&quot;:[],&quot;super_vote_id&quot;:[],&quot;cover&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLUyslMjCmYhu5jU0quJoglqC6oRbEWeoLN1xiasFicPLkv0QwRwIIJaxsSfwOeTpZh4ia6VhstuG4ticA\\/0?wx_fmt=jpeg&quot;,&quot;smart_product&quot;:0,&quot;modify_status&quot;:4,&quot;appmsg_like_type&quot;:2,&quot;can_delete_status&quot;:0,&quot;old_like_num&quot;:2,&quot;itemidx&quot;:1,&quot;is_pay_subscribe&quot;:0,&quot;is_from_transfer&quot;:0,&quot;public_tag_info&quot;:{&quot;public_tag_list&quot;:[],&quot;modify_times&quot;:0,&quot;init_tag_list_size&quot;:0},&quot;appmsg_album_info&quot;:{&quot;id&quot;:&quot;3546387321585647617&quot;,&quot;title&quot;:&quot;早起小语&quot;,&quot;album_id&quot;:3546387321585647617,&quot;appmsg_album_infos&quot;:[{&quot;id&quot;:&quot;3546387321585647617&quot;,&quot;title&quot;:&quot;早起小语&quot;,&quot;album_id&quot;:3546387321585647617,&quot;appmsg_album_infos&quot;:[],&quot;tagSource&quot;:4}]},&quot;digest&quot;:&quot;早起小语（788-809）&quot;,&quot;open_fansmsg&quot;:0,&quot;is_cooling_article&quot;:0,&quot;pic_cdn_url_235_1&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLUyslMjCmYhu5jU0quJoglq7mnxeU18vbxFYFmKibCK09oMtMu7jdialOlprFHnmNLn2RmHucoPkz0w\\/0?wx_fmt=jpeg&quot;,&quot;pic_cdn_url_16_9&quot;:&quot;&quot;,&quot;disable_recommend&quot;:0,&quot;line_info&quot;:{&quot;use_line&quot;:1,&quot;line_count&quot;:0,&quot;send_time&quot;:1722921838,&quot;is_appmsg_flag&quot;:1,&quot;is_use_flag&quot;:0},&quot;claim_source_type&quot;:0}],&quot;appmsgex&quot;:[],&quot;copy_type&quot;:77,&quot;copy_appmsg_id&quot;:100000843,&quot;new_publish&quot;:0}"},{"publish_type":101,"publish_info":"{&quot;type&quot;:9,&quot;msgid&quot;:1000000100,&quot;sent_info&quot;:{&quot;time&quot;:1722854781,&quot;func_flag&quot;:32770,&quot;is_send_all&quot;:true,&quot;is_published&quot;:0},&quot;sent_status&quot;:{&quot;total&quot;:304,&quot;succ&quot;:304,&quot;fail&quot;:0,&quot;progress&quot;:100,&quot;userprotect&quot;:0},&quot;sent_result&quot;:{&quot;msg_status&quot;:2,&quot;refuse_reason&quot;:&quot;&quot;,&quot;reject_index_list&quot;:[],&quot;update_time&quot;:1722854800},&quot;appmsg_info&quot;:[{&quot;share_type&quot;:0,&quot;appmsgid&quot;:2247484467,&quot;content_url&quot;:&quot;https:\\/\\/mp.weixin.qq.com\\/s?__biz=Mzk0MzI3NDI5MQ==&amp;mid=2247484467&amp;idx=1&amp;sn=5993cfeb01b607635bf2ea0e75344a9c&amp;chksm=c337246ff440ad79afa9d7cc929151ef87e5e0d0995ac86751667b04c1133fec1286cea39eec#rd&quot;,&quot;title&quot;:&quot;简易中国象棋程序的制作&quot;,&quot;is_deleted&quot;:false,&quot;copyright_status&quot;:11,&quot;copyright_type&quot;:1,&quot;read_num&quot;:13,&quot;like_num&quot;:0,&quot;comment_id&quot;:&quot;3577951175074545673&quot;,&quot;is_comment_enable&quot;:true,&quot;comment_num&quot;:0,&quot;reprint_num&quot;:0,&quot;vote_id&quot;:[],&quot;super_vote_id&quot;:[],&quot;cover&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLXUeqxW1NBYT2xehiaVBicicT3CEm2KuzzdGwBnGqvURmedZS63Sibx2CgAxDxsztFDPQBexTHm1Stqew\\/0?wx_fmt=jpeg&quot;,&quot;smart_product&quot;:0,&quot;modify_status&quot;:4,&quot;appmsg_like_type&quot;:2,&quot;can_delete_status&quot;:0,&quot;old_like_num&quot;:2,&quot;itemidx&quot;:1,&quot;is_pay_subscribe&quot;:0,&quot;is_from_transfer&quot;:0,&quot;public_tag_info&quot;:{&quot;public_tag_list&quot;:[],&quot;modify_times&quot;:0,&quot;init_tag_list_size&quot;:0},&quot;appmsg_album_info&quot;:{&quot;id&quot;:&quot;3566402168506449920&quot;,&quot;title&quot;:&quot;编程学习&quot;,&quot;album_id&quot;:3566402168506449920,&quot;appmsg_album_infos&quot;:[{&quot;id&quot;:&quot;3566402168506449920&quot;,&quot;title&quot;:&quot;编程学习&quot;,&quot;album_id&quot;:3566402168506449920,&quot;appmsg_album_infos&quot;:[],&quot;tagSource&quot;:4}]},&quot;digest&quot;:&quot;本文介绍了制作简易象棋游戏的过程。&quot;,&quot;open_fansmsg&quot;:0,&quot;is_cooling_article&quot;:0,&quot;pic_cdn_url_235_1&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLXUeqxW1NBYT2xehiaVBicicT3ZLbaIdC0qEN1UETvWsVdYIpXcuXXlwllnlSDGSehRB8EWGB4uNXKNQ\\/0?wx_fmt=jpeg&quot;,&quot;pic_cdn_url_16_9&quot;:&quot;&quot;,&quot;disable_recommend&quot;:0,&quot;line_info&quot;:{&quot;use_line&quot;:1,&quot;line_count&quot;:0,&quot;send_time&quot;:1722854796,&quot;is_appmsg_flag&quot;:1,&quot;is_use_flag&quot;:0},&quot;claim_source_type&quot;:0}],&quot;appmsgex&quot;:[],&quot;copy_type&quot;:77,&quot;copy_appmsg_id&quot;:100000788,&quot;new_publish&quot;:0}"},{"publish_type":101,"publish_info":"{&quot;type&quot;:9,&quot;msgid&quot;:1000000099,&quot;sent_info&quot;:{&quot;time&quot;:1722771088,&quot;func_flag&quot;:32770,&quot;is_send_all&quot;:true,&quot;is_published&quot;:0},&quot;sent_status&quot;:{&quot;total&quot;:304,&quot;succ&quot;:304,&quot;fail&quot;:0,&quot;progress&quot;:100,&quot;userprotect&quot;:0},&quot;sent_result&quot;:{&quot;msg_status&quot;:2,&quot;refuse_reason&quot;:&quot;&quot;,&quot;reject_index_list&quot;:[],&quot;update_time&quot;:1722771099},&quot;appmsg_info&quot;:[{&quot;share_type&quot;:0,&quot;appmsgid&quot;:2247484366,&quot;content_url&quot;:&quot;https:\\/\\/mp.weixin.qq.com\\/s?__biz=Mzk0MzI3NDI5MQ==&amp;mid=2247484366&amp;idx=1&amp;sn=c55fbabc554d9d8710caa228bef8d030&amp;chksm=c3372392f440aa8428eac77a48bd53d5a33b5bb1f102456575764d72294bd8f6bc3d7f9a5372#rd&quot;,&quot;title&quot;:&quot;记得自己的初衷&quot;,&quot;is_deleted&quot;:false,&quot;copyright_status&quot;:11,&quot;copyright_type&quot;:1,&quot;read_num&quot;:33,&quot;like_num&quot;:0,&quot;comment_id&quot;:&quot;3576547053309952003&quot;,&quot;is_comment_enable&quot;:true,&quot;comment_num&quot;:0,&quot;reprint_num&quot;:0,&quot;vote_id&quot;:[],&quot;super_vote_id&quot;:[],&quot;cover&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLUiaSTP5XVuaZQvh1cm4JLNiadp3v4Uiakf5RBl4ia0ic1lXs5ib6UZTIycOlTibZneeC7RfSIETrmuA0aRA\\/0?wx_fmt=jpeg&quot;,&quot;smart_product&quot;:0,&quot;modify_status&quot;:4,&quot;appmsg_like_type&quot;:2,&quot;can_delete_status&quot;:0,&quot;old_like_num&quot;:2,&quot;itemidx&quot;:1,&quot;is_pay_subscribe&quot;:0,&quot;is_from_transfer&quot;:0,&quot;public_tag_info&quot;:{&quot;public_tag_list&quot;:[],&quot;modify_times&quot;:0,&quot;init_tag_list_size&quot;:0},&quot;appmsg_album_info&quot;:{&quot;id&quot;:&quot;3557810908381036547&quot;,&quot;title&quot;:&quot;有关本人&quot;,&quot;album_id&quot;:3557810908381036547,&quot;appmsg_album_infos&quot;:[{&quot;id&quot;:&quot;3557810908381036547&quot;,&quot;title&quot;:&quot;有关本人&quot;,&quot;album_id&quot;:3557810908381036547,&quot;appmsg_album_infos&quot;:[],&quot;tagSource&quot;:4}]},&quot;digest&quot;:&quot;记得自己的初衷，练车记。&quot;,&quot;open_fansmsg&quot;:0,&quot;is_cooling_article&quot;:0,&quot;pic_cdn_url_235_1&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLUiaSTP5XVuaZQvh1cm4JLNia4vnAqTTzTeaicuKmAvEvZoAaD5A4UAwA21JBUSeEL7nnD9NuibxamZdQ\\/0?wx_fmt=jpeg&quot;,&quot;pic_cdn_url_16_9&quot;:&quot;&quot;,&quot;disable_recommend&quot;:0,&quot;line_info&quot;:{&quot;use_line&quot;:1,&quot;line_count&quot;:0,&quot;send_time&quot;:1722771095,&quot;is_appmsg_flag&quot;:1,&quot;is_use_flag&quot;:0},&quot;claim_source_type&quot;:0}],&quot;appmsgex&quot;:[],&quot;copy_type&quot;:77,&quot;copy_appmsg_id&quot;:100000706,&quot;new_publish&quot;:0}"},{"publish_type":101,"publish_info":"{&quot;type&quot;:9,&quot;msgid&quot;:1000000098,&quot;sent_info&quot;:{&quot;time&quot;:1722167334,&quot;func_flag&quot;:32770,&quot;is_send_all&quot;:true,&quot;is_published&quot;:0},&quot;sent_status&quot;:{&quot;total&quot;:303,&quot;succ&quot;:303,&quot;fail&quot;:0,&quot;progress&quot;:100,&quot;userprotect&quot;:0},&quot;sent_result&quot;:{&quot;msg_status&quot;:2,&quot;refuse_reason&quot;:&quot;&quot;,&quot;reject_index_list&quot;:[],&quot;update_time&quot;:1722167345},&quot;appmsg_info&quot;:[{&quot;share_type&quot;:0,&quot;appmsgid&quot;:2247484353,&quot;content_url&quot;:&quot;https:\\/\\/mp.weixin.qq.com\\/s?__biz=Mzk0MzI3NDI5MQ==&amp;mid=2247484353&amp;idx=1&amp;sn=ef234cff5a667c9062c75e21d49f8bbc&amp;chksm=c337239df440aa8bfbbf775a83c8608ed0049f4f32882d4d1a2b894432640585d6573135e606#rd&quot;,&quot;title&quot;:&quot;中国象棋棋盘的绘制&quot;,&quot;is_deleted&quot;:false,&quot;copyright_status&quot;:11,&quot;copyright_type&quot;:1,&quot;read_num&quot;:24,&quot;like_num&quot;:0,&quot;comment_id&quot;:&quot;3566417741202227208&quot;,&quot;is_comment_enable&quot;:true,&quot;comment_num&quot;:1,&quot;reprint_num&quot;:0,&quot;vote_id&quot;:[],&quot;super_vote_id&quot;:[],&quot;cover&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLUb0snpkzCJRgn3qwwNHHtiaKp7ReTNjnprOd8zPpuSKkwfUHvA8icNbJiaZglxStUBamIYibDYhs9rwA\\/0?wx_fmt=jpeg&quot;,&quot;smart_product&quot;:0,&quot;modify_status&quot;:4,&quot;appmsg_like_type&quot;:2,&quot;can_delete_status&quot;:0,&quot;old_like_num&quot;:4,&quot;itemidx&quot;:1,&quot;is_pay_subscribe&quot;:0,&quot;is_from_transfer&quot;:0,&quot;public_tag_info&quot;:{&quot;public_tag_list&quot;:[],&quot;modify_times&quot;:0,&quot;init_tag_list_size&quot;:0},&quot;appmsg_album_info&quot;:{&quot;id&quot;:&quot;3566402168506449920&quot;,&quot;title&quot;:&quot;编程学习&quot;,&quot;album_id&quot;:3566402168506449920,&quot;appmsg_album_infos&quot;:[{&quot;id&quot;:&quot;3566402168506449920&quot;,&quot;title&quot;:&quot;编程学习&quot;,&quot;album_id&quot;:3566402168506449920,&quot;appmsg_album_infos&quot;:[],&quot;tagSource&quot;:1}]},&quot;digest&quot;:&quot;本文介绍了C、Python、Java三种编程语言绘制中国象棋棋盘的过程。&quot;,&quot;open_fansmsg&quot;:0,&quot;is_cooling_article&quot;:0,&quot;pic_cdn_url_235_1&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLUb0snpkzCJRgn3qwwNHHtiaMvEpvxKZG6KnpGA1NwP3UJjXBnwRCEn45me1e6NYF98FUNV0p8KPxg\\/0?wx_fmt=jpeg&quot;,&quot;pic_cdn_url_16_9&quot;:&quot;&quot;,&quot;disable_recommend&quot;:0,&quot;line_info&quot;:{&quot;use_line&quot;:1,&quot;line_count&quot;:0,&quot;send_time&quot;:1722167341,&quot;is_appmsg_flag&quot;:1,&quot;is_use_flag&quot;:0},&quot;claim_source_type&quot;:0}],&quot;appmsgex&quot;:[],&quot;copy_type&quot;:77,&quot;copy_appmsg_id&quot;:100000698,&quot;new_publish&quot;:0}"},{"publish_type":101,"publish_info":"{&quot;type&quot;:9,&quot;msgid&quot;:1000000097,&quot;sent_info&quot;:{&quot;time&quot;:1721668786,&quot;func_flag&quot;:32770,&quot;is_send_all&quot;:true,&quot;is_published&quot;:0},&quot;sent_status&quot;:{&quot;total&quot;:123,&quot;succ&quot;:123,&quot;fail&quot;:0,&quot;progress&quot;:100,&quot;userprotect&quot;:0},&quot;sent_result&quot;:{&quot;msg_status&quot;:2,&quot;refuse_reason&quot;:&quot;&quot;,&quot;reject_index_list&quot;:[],&quot;update_time&quot;:1721668795},&quot;appmsg_info&quot;:[{&quot;share_type&quot;:0,&quot;appmsgid&quot;:2247484344,&quot;content_url&quot;:&quot;https:\\/\\/mp.weixin.qq.com\\/s?__biz=Mzk0MzI3NDI5MQ==&amp;mid=2247484344&amp;idx=1&amp;sn=9eb3430815fb7cbbc8b9682b725634af&amp;chksm=c33723e4f440aaf24425c13d2d70eb2807bec20e59aeec244654773947ffafd90eafc98e3164#rd&quot;,&quot;title&quot;:&quot;《红楼梦》人物赏析——赵姨娘、贾环&quot;,&quot;is_deleted&quot;:false,&quot;copyright_status&quot;:11,&quot;copyright_type&quot;:1,&quot;read_num&quot;:417,&quot;like_num&quot;:0,&quot;comment_id&quot;:&quot;3558053490231066624&quot;,&quot;is_comment_enable&quot;:true,&quot;comment_num&quot;:0,&quot;reprint_num&quot;:0,&quot;vote_id&quot;:[],&quot;super_vote_id&quot;:[],&quot;cover&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLWjaph8w5tO5WD8XXWRLa8qjTWxFTupU1gGLN8WZ2JniaTAiajJwYzzNibWgVEXwFLpV4Wogl0USia9uQ\\/0?wx_fmt=jpeg&quot;,&quot;smart_product&quot;:0,&quot;modify_status&quot;:4,&quot;appmsg_like_type&quot;:2,&quot;can_delete_status&quot;:0,&quot;old_like_num&quot;:2,&quot;itemidx&quot;:1,&quot;is_pay_subscribe&quot;:0,&quot;is_from_transfer&quot;:0,&quot;public_tag_info&quot;:{&quot;public_tag_list&quot;:[],&quot;modify_times&quot;:0,&quot;init_tag_list_size&quot;:0},&quot;appmsg_album_info&quot;:{&quot;id&quot;:&quot;3552192354235432961&quot;,&quot;title&quot;:&quot;红楼梦&quot;,&quot;album_id&quot;:3552192354235432961,&quot;appmsg_album_infos&quot;:[{&quot;id&quot;:&quot;3552192354235432961&quot;,&quot;title&quot;:&quot;红楼梦&quot;,&quot;album_id&quot;:3552192354235432961,&quot;appmsg_album_infos&quot;:[],&quot;tagSource&quot;:3}]},&quot;digest&quot;:&quot;《红楼梦》人物赏析——赵姨娘、贾环&quot;,&quot;open_fansmsg&quot;:0,&quot;is_cooling_article&quot;:0,&quot;pic_cdn_url_235_1&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLWjaph8w5tO5WD8XXWRLa8qIx0b2Ig9ibiceptrEosIbsz1uFZ2oqyhibSeUGez92DqN0icCXbgndb2VA\\/0?wx_fmt=jpeg&quot;,&quot;pic_cdn_url_16_9&quot;:&quot;&quot;,&quot;disable_recommend&quot;:0,&quot;line_info&quot;:{&quot;use_line&quot;:1,&quot;line_count&quot;:0,&quot;send_time&quot;:1721668792,&quot;is_appmsg_flag&quot;:1,&quot;is_use_flag&quot;:0},&quot;claim_source_type&quot;:0}],&quot;appmsgex&quot;:[],&quot;copy_type&quot;:77,&quot;copy_appmsg_id&quot;:100000692,&quot;new_publish&quot;:0}"},{"publish_type":101,"publish_info":"{&quot;type&quot;:9,&quot;msgid&quot;:1000000096,&quot;sent_info&quot;:{&quot;time&quot;:1721615889,&quot;func_flag&quot;:32770,&quot;is_send_all&quot;:true,&quot;is_published&quot;:0},&quot;sent_status&quot;:{&quot;total&quot;:87,&quot;succ&quot;:87,&quot;fail&quot;:0,&quot;progress&quot;:100,&quot;userprotect&quot;:0},&quot;sent_result&quot;:{&quot;msg_status&quot;:2,&quot;refuse_reason&quot;:&quot;&quot;,&quot;reject_index_list&quot;:[],&quot;update_time&quot;:1721615897},&quot;appmsg_info&quot;:[{&quot;share_type&quot;:0,&quot;appmsgid&quot;:2247484339,&quot;content_url&quot;:&quot;https:\\/\\/mp.weixin.qq.com\\/s?__biz=Mzk0MzI3NDI5MQ==&amp;mid=2247484339&amp;idx=1&amp;sn=ea3057dd3cb210b7fbc48b7c888e7d9e&amp;chksm=c33723eff440aaf9b365fe563fab0e1ffb83792e4e0086cdd0b187c7d48d2eb245ac19fb0e89#rd&quot;,&quot;title&quot;:&quot;《红楼梦》人物赏析——探春&quot;,&quot;is_deleted&quot;:false,&quot;copyright_status&quot;:11,&quot;copyright_type&quot;:1,&quot;read_num&quot;:156,&quot;like_num&quot;:0,&quot;comment_id&quot;:&quot;3557166031557345285&quot;,&quot;is_comment_enable&quot;:true,&quot;comment_num&quot;:0,&quot;reprint_num&quot;:0,&quot;vote_id&quot;:[],&quot;super_vote_id&quot;:[],&quot;cover&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLWjaph8w5tO5WD8XXWRLa8qwLSgys7vq9bLK3W53L2yjQOCt9KBwTnHSrb3JrzyL0uibwYDW2iaukjw\\/0?wx_fmt=jpeg&quot;,&quot;smart_product&quot;:0,&quot;modify_status&quot;:4,&quot;appmsg_like_type&quot;:2,&quot;can_delete_status&quot;:0,&quot;old_like_num&quot;:2,&quot;itemidx&quot;:1,&quot;is_pay_subscribe&quot;:0,&quot;is_from_transfer&quot;:0,&quot;public_tag_info&quot;:{&quot;public_tag_list&quot;:[],&quot;modify_times&quot;:0,&quot;init_tag_list_size&quot;:0},&quot;appmsg_album_info&quot;:{&quot;id&quot;:&quot;3552192354235432961&quot;,&quot;title&quot;:&quot;红楼梦&quot;,&quot;album_id&quot;:3552192354235432961,&quot;appmsg_album_infos&quot;:[{&quot;id&quot;:&quot;3552192354235432961&quot;,&quot;title&quot;:&quot;红楼梦&quot;,&quot;album_id&quot;:3552192354235432961,&quot;appmsg_album_infos&quot;:[],&quot;tagSource&quot;:3}]},&quot;digest&quot;:&quot;《红楼梦》人物赏析——探春&quot;,&quot;open_fansmsg&quot;:0,&quot;is_cooling_article&quot;:0,&quot;pic_cdn_url_235_1&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLWjaph8w5tO5WD8XXWRLa8qibdypiazicE4FRbb6hAsOH1fsmGxe7DylDevYWxCZqVKx4OoK80BeUmrw\\/0?wx_fmt=jpeg&quot;,&quot;pic_cdn_url_16_9&quot;:&quot;&quot;,&quot;disable_recommend&quot;:0,&quot;line_info&quot;:{&quot;use_line&quot;:1,&quot;line_count&quot;:0,&quot;send_time&quot;:1721615895,&quot;is_appmsg_flag&quot;:1,&quot;is_use_flag&quot;:0},&quot;claim_source_type&quot;:0}],&quot;appmsgex&quot;:[],&quot;copy_type&quot;:77,&quot;copy_appmsg_id&quot;:100000687,&quot;new_publish&quot;:0}"},{"publish_type":101,"publish_info":"{&quot;type&quot;:9,&quot;msgid&quot;:1000000095,&quot;sent_info&quot;:{&quot;time&quot;:1721528787,&quot;func_flag&quot;:32770,&quot;is_send_all&quot;:true,&quot;is_published&quot;:0},&quot;sent_status&quot;:{&quot;total&quot;:72,&quot;succ&quot;:72,&quot;fail&quot;:0,&quot;progress&quot;:100,&quot;userprotect&quot;:0},&quot;sent_result&quot;:{&quot;msg_status&quot;:2,&quot;refuse_reason&quot;:&quot;&quot;,&quot;reject_index_list&quot;:[],&quot;update_time&quot;:1721528795},&quot;appmsg_info&quot;:[{&quot;share_type&quot;:0,&quot;appmsgid&quot;:2247484334,&quot;content_url&quot;:&quot;https:\\/\\/mp.weixin.qq.com\\/s?__biz=Mzk0MzI3NDI5MQ==&amp;mid=2247484334&amp;idx=1&amp;sn=7344798e39f9e5891fd0ffab9e0c49e2&amp;chksm=c33723f2f440aae475d2476fa7c2873544b02e3748e5f79c71926fdfd305a5b3f8155f36ce4b#rd&quot;,&quot;title&quot;:&quot;《红楼梦》人物赏析——平儿&quot;,&quot;is_deleted&quot;:false,&quot;copyright_status&quot;:11,&quot;copyright_type&quot;:1,&quot;read_num&quot;:588,&quot;like_num&quot;:1,&quot;comment_id&quot;:&quot;3555704693899378691&quot;,&quot;is_comment_enable&quot;:true,&quot;comment_num&quot;:0,&quot;reprint_num&quot;:0,&quot;vote_id&quot;:[],&quot;super_vote_id&quot;:[],&quot;cover&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLX8NIZbCdFia36DdY8qKpgJtLQNbjwKFBh90RXGfCVS1lmGYU1cbnjKamrfOvuiclMaBSMdGcvow8Fg\\/0?wx_fmt=jpeg&quot;,&quot;smart_product&quot;:0,&quot;modify_status&quot;:4,&quot;appmsg_like_type&quot;:2,&quot;can_delete_status&quot;:0,&quot;old_like_num&quot;:4,&quot;itemidx&quot;:1,&quot;is_pay_subscribe&quot;:0,&quot;is_from_transfer&quot;:0,&quot;public_tag_info&quot;:{&quot;public_tag_list&quot;:[],&quot;modify_times&quot;:0,&quot;init_tag_list_size&quot;:0},&quot;appmsg_album_info&quot;:{&quot;id&quot;:&quot;3552192354235432961&quot;,&quot;title&quot;:&quot;红楼梦&quot;,&quot;album_id&quot;:3552192354235432961,&quot;appmsg_album_infos&quot;:[{&quot;id&quot;:&quot;3552192354235432961&quot;,&quot;title&quot;:&quot;红楼梦&quot;,&quot;album_id&quot;:3552192354235432961,&quot;appmsg_album_infos&quot;:[],&quot;tagSource&quot;:3}]},&quot;digest&quot;:&quot;《红楼梦》人物赏析——平儿&quot;,&quot;open_fansmsg&quot;:0,&quot;is_cooling_article&quot;:0,&quot;pic_cdn_url_235_1&quot;:&quot;https:\\/\\/mmbiz.qpic.cn\\/sz_mmbiz_jpg\\/mEgEkabxZLX8NIZbCdFia36DdY8qKpgJtW9lsF5oGicicgkVqqcEbNMte6zR40HaZZpPia64w2vtBicVCGwUwC68ljg\\/0?wx_fmt=jpeg&quot;,&quot;pic_cdn_url_16_9&quot;:&quot;&quot;,&quot;disable_recommend&quot;:0,&quot;line_info&quot;:{&quot;use_line&quot;:1,&quot;line_count&quot;:0,&quot;send_time&quot;:1721528793,&quot;is_appmsg_flag&quot;:1,&quot;is_use_flag&quot;:0},&quot;claim_source_type&quot;:0}],&quot;appmsgex&quot;:[],&quot;copy_type&quot;:77,&quot;copy_appmsg_id&quot;:100000682,&quot;new_publish&quot;:0}"}],"featured_count":2};
+    isPublishPageNoEncode = false;
+    window.wx.cgiData = {
+    publish_count: publish_page.publish_count,
+    masssend_count: publish_page.masssend_count,
+    total_count: publish_page.total_count,
+    featured_count: publish_page.featured_count,
+    publish_list: publish_page.publish_list,
+    begin: '0' * 1,
+    count: '10' * 1,
+    type: '',
+    keyword: '',
+    service_type: '1' * 1,
+    realname_type: '0' * 1,
+    can_use_public_tag: '1' * 1,
+    customer_type: '0' * 1,
+    isPublishPageNoEncode: isPublishPageNoEncode,
+  }
+</script>    <!--[if (IE 9)|(IE 10)|(IE 11)]>  <script type="text/javascript">
+function findSvgUseTag () {
+  var useTags = document.querySelectorAll('use')
+  var symbols = document.querySelectorAll('symbol')
+  if (!Array.prototype.forEach) {
+    Array.prototype.forEach = function(fn, scope) {
+      for(var i = 0, len = this.length; i < len; ++i) {
+        fn.call(scope, this[i], i, this);
+      }
+    }
+  }
+  if (useTags.length > 0) {
+    [].forEach.call( useTags , function(item) {
+      var baseVal = item.href.baseVal.toString()
+      var symbolElement = document.querySelector('symbol'+baseVal)
+      symbolStr = new XMLSerializer().serializeToString(symbolElement)
+      var svgStr = symbolStr.replace(/symbol/g, "svg")
+      svgElement = new DOMParser().parseFromString(svgStr, "image/svg+xml")
+      var svgContent = item.parentNode
+      svgContent.removeChild(item)
+      svgContent.appendChild(svgElement.firstChild)
+    })
+  }
+}
+if (window.attachEvent) {
+  window.attachEvent("onload",
+    function() {
+      findSvgUseTag()
+    });
+} else {
+  window.addEventListener("load",
+    function() {
+      findSvgUseTag()
+    },
+  true);
+}
+</script><![endif]-->    <!--#0002#-->    <!--%0002%-->    <script>
+      (function() {
+        function setOpenFlex() {
+          const m_open = document.getElementById('m_open');
+          if (m_open) {
+            m_open.style.display = 'flex';
+          }
+        }
+
+        // 在 mpapp 中打开不会显示悬浮菜单
+        try {
+          const ua = navigator.userAgent;
+          const is_mpapp = /MPAPP\/([\d\.]+)/i.test(ua);
+
+          if (!is_mpapp) {
+            setOpenFlex();
+          }
+        } catch (e) {
+          setOpenFlex();
+          console.error(e);
+        }
+      })();
+    </script>  </body></html><script src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/modules~advanced/menusetting/menusetting~advanced/menusetting4Web1~album/edit/edit~album/list/list~b~modules.5dafb049.js" onerror="wx_loaderror(this)" crossorigin="anonymous"></script><script src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/vendors~advanced/menusetting/menusetting~advanced/menusetting4Web1~album/edit/edit~album/list/list~b~vendors.6a7c889a.js" onerror="wx_loaderror(this)" crossorigin="anonymous"></script><script src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/threerd~advanced/menusetting/menusetting~advanced/menusetting4Web1~album/edit/edit~album/list/list~b~threerd.4d165989.js" onerror="wx_loaderror(this)" crossorigin="anonymous"></script><script src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/threerd~advanced/menusetting/menusetting~advanced/menusetting4Web1~album/edit/edit~album/list/list~c~threerd.80723082.js" onerror="wx_loaderror(this)" crossorigin="anonymous"></script><script src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/modules~advanced/menusetting/menusetting~advanced/menusetting4Web1~album/edit/edit~cardticket/member~modules.4a74573f.js" onerror="wx_loaderror(this)" crossorigin="anonymous"></script><script src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/modules~advanced/menusetting/menusetting~advanced/menusetting4Web1~album/edit/edit~city/service_edit~modules.05bbf79b.js" onerror="wx_loaderror(this)" crossorigin="anonymous"></script><script src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/vendors~advanced/menusetting/menusetting~advanced/menusetting4Web1~album/edit/edit~city/service_edit~vendors.8cc49bb4.js" onerror="wx_loaderror(this)" crossorigin="anonymous"></script><script src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/threerd~advanced/menusetting/menusetting~advanced/menusetting4Web1~album/edit/edit~city/service_edit~threerd.bfefab37.js" onerror="wx_loaderror(this)" crossorigin="anonymous"></script><script src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/modules~advanced/menusetting/menusetting~advanced/menusetting4Web1~album/edit/edit~complain/public_c~modules.9903074f.js" onerror="wx_loaderror(this)" crossorigin="anonymous"></script><script src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/default~home/index/index_gray~media/publish_history/publish_history.66fb2049.js" onerror="wx_loaderror(this)" crossorigin="anonymous"></script><script src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/media/publish_history/publish_history.b297cff5.js" onerror="wx_loaderror(this)" crossorigin="anonymous"></script>
